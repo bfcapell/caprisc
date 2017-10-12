@@ -26,9 +26,9 @@
 
     font-family: 'Teko', sans-serif;
   padding-top: 60px;
+  padding-bottom: 30px;
   width: 100%;
   width: 100vw;
-  height: 550px;
   background: #3a6186; /* fallback for old browsers */
     color : #fff;
 }
@@ -78,7 +78,7 @@ textarea.form-control {
 
 <section id="contact">
 			<div class="section-content">
-				<h1 class="section-header">probabilitat <span class="content-header wow fadeIn " data-wow-delay="0.2s" data-wow-duration="2s"> càncer de pròstata d'alt risc</span></h1>
+				<h1 class="section-header">probability of <span class="content-header wow fadeIn " data-wow-delay="0.2s" data-wow-duration="2s"> high-risk prostate cancer</span></h1>
 				<h3></h3>
 			</div>
 			<div class="contact-section">
@@ -86,19 +86,23 @@ textarea.form-control {
 				<form>
 					<div class="col-md-6 form-line">
 			  			<div class="form-group">
-                <label id="varNumPhidCopy-lbl" for="varNumPhidCopy" class="">Densitat de PHI</label>
-                <input type="text" name="jform[varNumPhidCopy]" id="varNumPhidCopy"  class="form-control" size="5" />
+                <label id="varNumPhidCopy-lbl" for="varNumPhidCopy" class="">PHI</label>
+                <input type="text" name="jform[varNumPhidCopy]" id="varNumPhi"  class="form-control" size="5" />
+              </div>
+			  			<div class="form-group">
+                <label id="varNumPhidCopy-lbl" for="varNumPhidCopy" class="">Prostate volume (cc)</label>
+                <input type="text" name="jform[varNumPhidCopy]" id="varProsVol"  class="form-control" size="5" />
               </div>
 				  		<div class="form-group">
 <label id="varNumPsagL-lbl" for="varNumPsagL" class="">PSA (μg/L)</label>
 <input type="text" name="jform[varNumPsagL]" id="varNumPsagL"  class="form-control" size="5" />
 					  	</div>
 					  	<div class="form-group">
-<label id="varNumEdat-lbl" for="varNumEdat" class="">Edat</label>
+<label id="varNumEdat-lbl" for="varNumEdat" class="">Age</label>
 <input type="text" name="jform[varNumEdat]" id="varNumEdat"  class="form-control" />
 			  			</div>
 					  	<div class="form-group">
-<label id="varNumTR-lbl" for="varNumTR" class="">Tacte rectal (1: sospitós; 0: no sospitós)</label>
+<label id="varNumTR-lbl" for="varNumTR" class="">DIGITAL RECTAL EXAMINATION (1: positive; 0: negative)</label>
 <input type="text" name="jform[varNumTR]" id="varNumTR"  class="form-control" size="5" />
 			  			</div>
 			  			<div>
@@ -107,7 +111,11 @@ textarea.form-control {
 			  		</div>
 			  		<div class="col-md-6">
 			  			<div class="form-group">
-			  				<label for ="description"> Probabilitat de càncer de pròstata d'alt risc: <br /></label>
+                <label id="varNumPhidCopy-lbl" for="varNumPhidCopy" class="">PHI density</label>
+                <input type="text" name="jform[varNumPhidCopy]" id="varNumPhidCopy"  class="form-control" size="5" />
+              </div>
+			  			<div class="form-group">
+			  				<label for ="description"> probability of high-risk prostate cancer: <br /></label>
                 <textarea class='form-control calc-result-value'></textarea>
 			  			</div>
 
@@ -116,18 +124,27 @@ textarea.form-control {
 			</div>
 		</section>
     <script>
-      function calculaRisc(){
-        $varNumPhidCopy = $("#varNumPhidCopy").val().replace(',', '.')
-        $varNumPsagL = $("#varNumPsagL").val().replace(',', '.')
-        $varNumEdat = $("#varNumEdat").val().replace(',', '.')
-        $varNumTR = $("#varNumTR").val().replace(',', '.')
+      $("#varProsVol, #varNumPhi").on('change keydown paste input', calculaPhid)
 
-        $resResult=0;
-        $resResult2=0;
-        $resResult1=0;
-        $resResult=$resResult+1.035*$varNumPhidCopy+0.024*$varNumPsagL+0.048*$varNumEdat+0.295*$varNumTR-5.96;
-        $resResult2=$resResult2+1+ Math.pow(2.7182818, $resResult);
-        $resResult1=$resResult1+ Math.pow(2.7182818, $resResult)/$resResult2;
+      function calculaPhid(){
+        var $varNumPhi = $("#varNumPhi").val().replace(',', '.')
+        var $varProsVol = $("#varProsVol").val().replace(',', '.')
+        var phid = $varNumPhi / $varProsVol
+        if ($varProsVol == 0) {phid = ""}
+        $("#varNumPhidCopy").val(phid)
+      }
+      function calculaRisc(){
+        var $varNumPhidCopy = $("#varNumPhidCopy").val().replace(',', '.')
+        var $varNumPsagL = $("#varNumPsagL").val().replace(',', '.')
+        var $varNumEdat = $("#varNumEdat").val().replace(',', '.')
+        var $varNumTR = $("#varNumTR").val().replace(',', '.')
+
+        var $resResult=0;
+        var $resResult2=0;
+        var $resResult1=0;
+        var $resResult=$resResult+1.035*$varNumPhidCopy+0.024*$varNumPsagL+0.048*$varNumEdat+0.295*$varNumTR-5.96;
+        var $resResult2=$resResult2+1+ Math.pow(2.7182818, $resResult);
+        var $resResult1=$resResult1+ Math.pow(2.7182818, $resResult)/$resResult2;
         jQuery('.calc-result-value').val($resResult1)
       }
 
