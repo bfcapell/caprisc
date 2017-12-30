@@ -86,17 +86,21 @@ textarea.form-control {
 				<form>
 					<div class="col-md-6 form-line">
 			  			<div class="form-group">
-                <label id="varNumPhidCopy-lbl" for="varNumPhidCopy" class="">PHI</label>
-                <input type="text" name="jform[varNumPhidCopy]" id="varNumPhi"  class="form-control" size="5" />
+                <label id="jform_varNumP2PSA-lbl" for="jform_varNumP2PSA" class="">[-2]proPSA  (pg/mL)</label>
+                <input type="text" name="jform[varNumP2PSA]" id="varNumP2PSA"  class="form-control" size="5" />
               </div>
 			  			<div class="form-group">
-                <label id="varNumPhidCopy-lbl" for="varNumPhidCopy" class="">Prostate volume (cc)</label>
-                <input type="text" name="jform[varNumPhidCopy]" id="varProsVol"  class="form-control" size="5" />
+                <label id="jform_varNumFreePSA-lbl" for="jform_varNumFreePSA" class="">free PSA (μg/L)</label>
+                <input type="text" name="jform[varNumFreePSA]" id="varNumFreePSA"  class="form-control" size="5"/>
               </div>
 				  		<div class="form-group">
 <label id="varNumPsagL-lbl" for="varNumPsagL" class="">PSA (μg/L)</label>
 <input type="text" name="jform[varNumPsagL]" id="varNumPsagL"  class="form-control" size="5" />
 					  	</div>
+			  			<div class="form-group">
+                <label id="varProsVol-lbl" for="varProsVol" class="">Prostate volume (cc)</label>
+                <input type="text" name="jform[varNumPhidCopy]" id="varProsVol"  class="form-control" size="5" />
+              </div>
 					  	<div class="form-group">
 <label id="varNumEdat-lbl" for="varNumEdat" class="">Age</label>
 <input type="text" name="jform[varNumEdat]" id="varNumEdat"  class="form-control" />
@@ -111,6 +115,10 @@ textarea.form-control {
 			  		</div>
 			  		<div class="col-md-6">
 			  			<div class="form-group">
+                <label id="varNumPhi-lbl" for="varNumPhi" class="">PHI</label>
+                <input type="text" name="jform[varNumPhi]" id="varNumPhi"  class="form-control" size="5" />
+              </div>
+			  			<div class="form-group">
                 <label id="varNumPhidCopy-lbl" for="varNumPhidCopy" class="">PHI density</label>
                 <input type="text" name="jform[varNumPhidCopy]" id="varNumPhidCopy"  class="form-control" size="5" />
               </div>
@@ -124,8 +132,18 @@ textarea.form-control {
 			</div>
 		</section>
     <script>
+      $("#varNumP2PSA, #varNumFreePSA, #varNumPsagL").on('change keydown paste input', calculaPhi)
       $("#varProsVol, #varNumPhi").on('change keydown paste input', calculaPhid)
 
+      function calculaPhi() {
+        var $varNumP2PSA = $("#varNumP2PSA").val().replace(',', '.');
+        var $varNumFreePSA = $("#varNumFreePSA").val().replace(',', '.');
+        var $varNumPSA = $("#varNumPsagL").val().replace(',', '.');
+
+        var $resResult = ($varNumP2PSA/$varNumFreePSA)* Math.pow($varNumPSA, 1/(2));
+        if ($varNumP2PSA == '' || $varNumFreePSA == '' || $varNumPSA == '') {$resResult = ""}
+        jQuery('#varNumPhi').val($resResult)
+      }
       function calculaPhid(){
         var $varNumPhi = $("#varNumPhi").val().replace(',', '.')
         var $varProsVol = $("#varProsVol").val().replace(',', '.')
